@@ -41,46 +41,30 @@
     </div>
   </div>
 
-  <script>
-    var firebaseConfig = {
-      apiKey: "AIzaSyCeA52-1J41uVC93nszDNl85AMyAROuKsU",
-      authDomain: "se-proj-8c444.firebaseapp.com",
-      projectId: "se-proj-8c444",
-      storageBucket: "se-proj-8c444.appspot.com",
-      messagingSenderId: "187183323117",
-      appId: "1:187183323117:web:e5f9679ff927da390bb9e4",
-      measurementId: "G-Y0RGLEBQJB",
-    };
-    
-    firebase.initializeApp(firebaseConfig);
-    
-    var storageRef = firebase.storage().ref();
-    var resourceName = "{{ video_name }}"
-    var videoRef = storageRef.child(resourceName);
-    
-    videoRef
-      .getDownloadURL()
-      .then(function (url) {
-        document.getElementById("my-video").src = url;
-      })
-      .catch(function (error) {
-        console.error("Error getting download URL: ", error);
-      });
+  <!-- Your HTML code remains unchanged -->
 
-    function toggleQualityOptions() {
-      var qualityOptionsDiv = document.getElementById("quality-options");
-      qualityOptionsDiv.classList.toggle("hidden");
-    }
+<script>
+  var firebaseConfig = {
+    apiKey: "AIzaSyCeA52-1J41uVC93nszDNl85AMyAROuKsU",
+    authDomain: "se-proj-8c444.firebaseapp.com",
+    projectId: "se-proj-8c444",
+    storageBucket: "se-proj-8c444.appspot.com",
+    messagingSenderId: "187183323117",
+    appId: "1:187183323117:web:e5f9679ff927da390bb9e4",
+    measurementId: "G-Y0RGLEBQJB",
+  };
 
-  </script>
+  firebase.initializeApp(firebaseConfig);
 
-  <script>
-    var video = document.getElementById("my-video");
-    var videoInfo = document.getElementById("video-info");
-    var videoName = "{{ video_name }}"
-    videoName = videoName.split(".")[0]
-    document.getElementById("video-name").innerText = videoName;
-    var playbackInfo = document.getElementById("playback-info");
+  var storageRef = firebase.storage().ref();
+  var resourceName = "{{ video_name }}";
+
+  var video = document.getElementById("my-video");
+  var videoInfo = document.getElementById("video-info");
+  var videoName = "{{ video_name }}";
+  document.getElementById("video-name").innerText = videoName;
+  var playbackInfo = document.getElementById("playback-info");
+  var qualityControl = document.getElementById("quality-control");
 
   var isOnline = navigator.onLine;
   var storageKey = "videoPlaybackTime";
@@ -115,18 +99,18 @@
     // Add your logic here to adjust quality based on downlink speed
     // You can customize this function according to your requirements
 
-    if (downlinkSpeed >= 5) {
+    if (downlinkSpeed >= 4) {
       return getAvailableQualities()[5]; // 1080p for downlink speed >= 4 Mbps
     } else if (downlinkSpeed >= 2.5) {
-      return getAvailableQualities()[4]; // 720p for 2 Mbps <= downlink speed < 4 Mbps
+      return getAvailableQualities()[4]; // 720p for 2.5 Mbps <= downlink speed < 4 Mbps
     } else if (downlinkSpeed >= 1.1) {
-      return getAvailableQualities()[3]; // 480p for 1 Mbps <= downlink speed < 2 Mbps
+      return getAvailableQualities()[3]; // 480p for 1.1 Mbps <= downlink speed < 2.5 Mbps
     } else if (downlinkSpeed >= 0.7) {
-      return getAvailableQualities()[2]; // 360p for 0.5 Mbps <= downlink speed < 1 Mbps
+      return getAvailableQualities()[2]; // 360p for 0.7 Mbps <= downlink speed < 1.1 Mbps
     } else if (downlinkSpeed >= 0.5) {
-      return getAvailableQualities()[1]; // 240p for 0.2 Mbps <= downlink speed < 0.5 Mbps
+      return getAvailableQualities()[1]; // 240p for 0.5 Mbps <= downlink speed < 0.7 Mbps
     } else {
-      return getAvailableQualities()[0]; // 144p for downlink speed < 0.2 Mbps
+      return getAvailableQualities()[0]; // 144p for downlink speed < 0.5 Mbps
     }
   }
 
@@ -177,7 +161,7 @@
 
     // Adjust quality based on downlink speed
     var currAdjustedQuality = getAdjustedQuality(downlinkSpeed);
-    console.log(currAdjustedQuality.label);
+    // console.log(currAdjustedQuality.label);
     if (currAdjustedQuality.label != adjustedQuality.label) {
       // Set the video source to the adjusted quality
       adjustedQuality = currAdjustedQuality;
