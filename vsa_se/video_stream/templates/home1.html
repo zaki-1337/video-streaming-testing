@@ -26,25 +26,88 @@
       </div>
     </nav>
 
-    <!-- Dynamic Video Divs -->
-    <div class="container mt-5">
-      {% for video in video_data %}
-        <div class="video-container">
-          <button onclick="redirectToVideoDisplay('{{ video.video_name }}')">
-            <div class="video-content">
-              <img src="{{ video.thumbnail_url }}" alt="Video Thumbnail">
-              <h3>{{ video.name }}</h3>
-            </div>
-          </button>
-        </div>
-      {% endfor %}
-    </div>
+   <!-- Dynamic Video Divs -->
+   <div class="container mt-5">
+    {% for video in video_data %}
+      <div class="video-container" id="{{ video.name | slugify }}">
+        <button onclick="redirectToVideoDisplay('{{ video.video_name }}')">
+          <div class="video-content">
+            <img src="{{ video.thumbnail_url }}" alt="Video Thumbnail">
+            <h3>{{ video.name }}</h3>
+          </div>
+        </button>
+      </div>
+    {% endfor %}
+  </div>
 
-    <!-- JavaScript Section -->
-    <script>
-      function redirectToVideoDisplay(encodedVideoName) {
-        window.location.href = `/video_display/${encodedVideoName}/`;
+  <!-- JavaScript Section -->
+  <script>
+    function redirectToVideoDisplay(encodedVideoName) {
+      window.location.href = `/video_display/${encodedVideoName}/`;
+    }
+
+    document.addEventListener("DOMContentLoaded", function () {
+      const form = document.querySelector('form[role="search"]');
+      const searchInput = form.querySelector('input[type="search"]');
+
+      form.addEventListener("submit", function (event) {
+        event.preventDefault();
+
+        const searchQuery = searchInput.value.toLowerCase();
+        const closestMatch = findClosestMatch(searchQuery);
+
+        if (closestMatch) {
+          const matchingDiv = document.getElementById(closestMatch);
+          if (matchingDiv) {
+            // Scroll to the matching div
+            matchingDiv.scrollIntoView({ behavior: "smooth" });
+          }
+        }
+      });
+
+      function findClosestMatch(searchQuery) {
+        const divIds = Array.from(document.querySelectorAll('.video-container'))
+          .map(div => div.id);
+
+        const closestMatch = divIds.reduce((prev, current) => {
+          const currentDistance = levenshteinDistance(searchQuery, current);
+          const prevDistance = levenshteinDistance(searchQuery, prev);
+          return currentDistance < prevDistance ? current : prev;
+        });
+
+        return closestMatch;
       }
-    </script>
+
+      function levenshteinDistance(a, b) {
+        if (a.length === 0) return b.length;
+        if (b.length === 0) return a.length;
+
+        const matrix = [];
+
+        // Initialize the matrix
+        for (let i = 0; i <= b.length; i++) {
+          matrix[i] = [i];
+        }
+
+        for (let j = 0; j <= a.length; j++) {
+          matrix[0][j] = j;
+        }
+
+        // Calculate Levenshtein distance
+        for (let i = 1; i <= b.length; i++) {
+          for (let j = 1; j <= a.length; j++) {
+            const cost = a[j - 1] === b[i - 1] ? 0 : 1;
+            matrix[i][j] = Math.min(
+              matrix[i - 1][j] + 1,
+              matrix[i][j - 1] + 1,
+              matrix[i - 1][j - 1] + cost
+            );
+          }
+        }
+
+        return matrix[b.length][a.length];
+      }
+    });
+  </script>
   </body>
 </html>
