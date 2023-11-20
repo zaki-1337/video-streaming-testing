@@ -30,7 +30,7 @@
     <div class="container mt-5">
       {% for video in video_data %}
         <div class="video-container">
-          <button onclick="redirectToVideoDisplay('{{ video.video_url }}')">
+          <button onclick="redirectToVideoDisplay('{{ video.video_name }}')">
             <div class="video-content">
               <img src="{{ video.thumbnail_url }}" alt="Video Thumbnail">
               <h3>{{ video.name }}</h3>
@@ -42,8 +42,8 @@
 
     <!-- JavaScript Section -->
     <script>
-      function redirectToVideoDisplay(encodedVideoUrl) {
-        window.location.href = `/video_display/${encodedVideoUrl}/`;
+      function redirectToVideoDisplay(encodedVideoName) {
+        window.location.href = `/video_display/${encodedVideoName}/`;
       }
     </script>
   </body>

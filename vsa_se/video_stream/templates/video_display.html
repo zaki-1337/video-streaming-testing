@@ -9,38 +9,6 @@
   {% load static %}
     <link rel="stylesheet" type="text/css" href="{% static 'Styles/styles.css' %}">
 
-  <script>
-    var firebaseConfig = {
-      apiKey: "AIzaSyCeA52-1J41uVC93nszDNl85AMyAROuKsU",
-      authDomain: "se-proj-8c444.firebaseapp.com",
-      projectId: "se-proj-8c444",
-      storageBucket: "se-proj-8c444.appspot.com",
-      messagingSenderId: "187183323117",
-      appId: "1:187183323117:web:e5f9679ff927da390bb9e4",
-      measurementId: "G-Y0RGLEBQJB",
-    };
-    
-    firebase.initializeApp(firebaseConfig);
-    
-    var storageRef = firebase.storage().ref();
-    var videoRef = storageRef.child("WEB-TECH PROJECT PRESENTATION.mp4");
-    
-    videoRef
-      .getDownloadURL()
-      .then(function (url) {
-        document.getElementById("my-video").src = url;
-      })
-      .catch(function (error) {
-        console.error("Error getting download URL: ", error);
-      });
-
-    function toggleQualityOptions() {
-      var qualityOptionsDiv = document.getElementById("quality-options");
-      qualityOptionsDiv.classList.toggle("hidden");
-    }
-
-  </script>
-
 </head>
 
 <body>
@@ -76,9 +44,44 @@
   </div>
 
   <script>
+    var firebaseConfig = {
+      apiKey: "AIzaSyCeA52-1J41uVC93nszDNl85AMyAROuKsU",
+      authDomain: "se-proj-8c444.firebaseapp.com",
+      projectId: "se-proj-8c444",
+      storageBucket: "se-proj-8c444.appspot.com",
+      messagingSenderId: "187183323117",
+      appId: "1:187183323117:web:e5f9679ff927da390bb9e4",
+      measurementId: "G-Y0RGLEBQJB",
+    };
+    
+    firebase.initializeApp(firebaseConfig);
+    
+    var storageRef = firebase.storage().ref();
+    var resourceName = "{{ video_name }}"
+    var videoRef = storageRef.child(resourceName);
+    
+    videoRef
+      .getDownloadURL()
+      .then(function (url) {
+        document.getElementById("my-video").src = url;
+      })
+      .catch(function (error) {
+        console.error("Error getting download URL: ", error);
+      });
+
+    function toggleQualityOptions() {
+      var qualityOptionsDiv = document.getElementById("quality-options");
+      qualityOptionsDiv.classList.toggle("hidden");
+    }
+
+  </script>
+
+  <script>
     var video = document.getElementById("my-video");
     var videoInfo = document.getElementById("video-info");
-    var videoName = document.getElementById("video-name").innerText;
+    var videoName = "{{ video_name }}"
+    videoName = videoName.split(".")[0]
+    document.getElementById("video-name").innerText = videoName;
     var playbackInfo = document.getElementById("playback-info");
 
     var isOnline = navigator.onLine;
@@ -88,6 +91,10 @@
     // Function to save the current playback time in local storage
     function savePlaybackTime() {
       localStorage.setItem(storageKey, video.currentTime.toString());
+    }
+
+    function handleVideoError() {
+      playbackInfo.innerText = "Error playing the video. Please try again later.";
     }
 
     // Check if the user is online
@@ -124,12 +131,15 @@
 
       // Event listener for video ended
       video.addEventListener("ended", function () {
-        videoInfo.innerText = "Video ended";
+        playbackInfo.innerText = "Video ended";
       });
+
+      // Event listener for video error
+      video.addEventListener("error", handleVideoError);
     } else {
       // User is offline
       video.pause();
-      videoInfo.innerText = "Offline - No internet connection";
+      playbackInfo.innerText = "Offline - No internet connection";
     }
   </script> 
 
