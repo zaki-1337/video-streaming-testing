@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Video Streaming Page</title>
+  <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-storage.js"></script>
+  {% load static %}
+    <link rel="stylesheet" type="text/css" href="{% static 'Styles/styles.css' %}">
+
+  <script>
+    var firebaseConfig = {
+      apiKey: "AIzaSyCeA52-1J41uVC93nszDNl85AMyAROuKsU",
+      authDomain: "se-proj-8c444.firebaseapp.com",
+      projectId: "se-proj-8c444",
+      storageBucket: "se-proj-8c444.appspot.com",
+      messagingSenderId: "187183323117",
+      appId: "1:187183323117:web:e5f9679ff927da390bb9e4",
+      measurementId: "G-Y0RGLEBQJB",
+    };
+    
+    firebase.initializeApp(firebaseConfig);
+    
+    var storageRef = firebase.storage().ref();
+    var videoRef = storageRef.child("WEB-TECH PROJECT PRESENTATION.mp4");
+    
+    videoRef
+      .getDownloadURL()
+      .then(function (url) {
+        document.getElementById("my-video").src = url;
+      })
+      .catch(function (error) {
+        console.error("Error getting download URL: ", error);
+      });
+
+    function toggleQualityOptions() {
+      var qualityOptionsDiv = document.getElementById("quality-options");
+      qualityOptionsDiv.classList.toggle("hidden");
+    }
+
+  </script>
+
+</head>
+
+<body>
+  <div id="video-container">
+    <video
+      id="my-video"
+      controls
+      preload="auto"
+      height="80%"
+      width="100%"
+    >
+      Your browser does not support the video tag.
+    </video>
+
+    <div id="video-info">
+      <div id="video-name">Video Name Goes Here</div>
+      <div id="playback-info"></div>
+      <div id="quality-control">
+        <label for="quality-select">Quality:</label>
+          <select id="quality-select" onchange="changeVideoQuality()">
+            <option value="144">144p</option>
+            <option value="240">240p</option>
+            <option value="360">360p</option>
+            <option value="480">480p</option>
+            <option value="720">720p</option>
+            <option value="1080">1080p</option>
+            <option value="1440">1440p</option>
+            <option value="2160">2160p</option>
+          </select>
+        <button onclick="toggleQualityOptions()">Select Quality</button>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    var video = document.getElementById("my-video");
+    var videoInfo = document.getElementById("video-info");
+    var videoName = document.getElementById("video-name").innerText;
+    var playbackInfo = document.getElementById("playback-info");
+
+    var isOnline = navigator.onLine;
+    var storageKey = "videoPlaybackTime";
+    var intervalTime = 1; // Save every second
+
+    // Function to save the current playback time in local storage
+    function savePlaybackTime() {
+      localStorage.setItem(storageKey, video.currentTime.toString());
+    }
+
+    // Check if the user is online
+    if (isOnline) {
+      // Check if there is a stored playback time
+      var storedTime = localStorage.getItem(storageKey);
+
+      if (storedTime) {
+        // Resume playback from the stored time
+        video.currentTime = parseFloat(storedTime);
+      }
+
+      // Add event listeners for online and offline events
+      window.addEventListener("online", function () {
+        video.play();
+        playbackInfo.innerText = "Online - Resuming playback";
+        window.setTimeout(() => {
+          playbackInfo.innerText = "";
+        }, 5000);
+      });
+
+      window.addEventListener("offline", function () {
+        video.pause();
+        playbackInfo.innerText = "Offline - Video paused";
+      });
+
+      // Save the current playback time every second
+      setInterval(savePlaybackTime, intervalTime * 1000);
+
+      // Clear stored playback time on play
+      video.addEventListener("play", function () {
+        localStorage.removeItem(storageKey);
+      });
+
+      // Event listener for video ended
+      video.addEventListener("ended", function () {
+        videoInfo.innerText = "Video ended";
+      });
+    } else {
+      // User is offline
+      video.pause();
+      videoInfo.innerText = "Offline - No internet connection";
+    }
+  </script> 
+
+</body>
+</html>

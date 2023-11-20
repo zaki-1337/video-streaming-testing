@@ -1,0 +1,111 @@
+body {
+    font-family: 'Arial', sans-serif;
+    margin: 10px;
+    padding: 0;
+    background-color: #1a1a1a;
+}
+  
+#video-container {
+    width: 80%;
+    height: 90%;
+    margin: 0 auto;
+    background-color: #000;
+    border-radius: 8px;
+    overflow: hidden;
+    box-shadow: 0 0 20px rgba(0, 0, 0, 0.3);
+}
+  
+#my-video {
+    width: 100%;
+    height: auto;
+    border-bottom: 1px solid #333;
+}
+  
+#video-info {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 8px;
+    background-color: #333;
+    color: #fff;
+    margin: 0;
+}
+  
+#video-name {
+    font-size: 20px;
+    font-weight: bold;
+    margin-bottom: 8px;
+}
+  
+#like-button {
+    margin-top: 10px;
+    margin-right: 15px;
+    border: 1px solid #fff;
+    padding: 10px;
+    border-radius: 20px;
+    align-items: center;
+    display: flex;
+    cursor: pointer;
+    transition: background-color 0.3s;
+}
+  
+#like-icon {
+    font-size: 24px;
+    margin-right: 5px;
+    color: #fff;
+}
+  
+#like-count {
+    font-size: 18px;
+    color: #fff;
+    display: inline-block;
+}
+
+body, html {
+  overflow: hidden;
+}
+
+.hidden {
+    display: none;
+}
+
+/* Add this in your <style> tag or styles.css */
+
+/* Style for Quality Control Section */
+#quality-control {
+    margin-top: 20px;
+}
+  
+label {
+    font-weight: bold;
+    margin-right: 10px;
+}
+  
+button {
+    background-color: #4caf50;
+    color: white;
+    padding: 8px 12px;
+    cursor: pointer;
+    border: none;
+}
+  
+  /* Style for Quality Options */
+#quality-options {
+    margin-top: 10px;
+}
+  
+select {
+    padding: 8px;
+    font-size: 16px;
+}
+  
+  /* Hover effect for the button */
+button:hover {
+    background-color: #45a049;
+}
+  
+  /* Style for hiding/showing the quality options */
+.hidden {
+    display: none;
+}
+  
