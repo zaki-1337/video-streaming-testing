@@ -35,8 +35,9 @@
             <option value="480">480p</option>
             <option value="720">720p</option>
             <option value="1080">1080p</option>
+            <option value="2160">2160p</option>
           </select>
-        <!-- <button onclick="toggleQualityOptions()">Select Quality</button> -->
+        {% comment %} <button onclick="toggleQualityOptions()">Select Quality</button>  {% endcomment %}
       </div>
     </div>
   </div>
@@ -92,6 +93,7 @@
       { label: "480p", url: `${resourceName}-480.mp4` },
       { label: "720p", url: `${resourceName}-720.mp4` },
       { label: "1080p", url: `${resourceName}-1080.mp4` },
+      { label: "2160p", url: `${resourceName}-2160.mp4` },
     ];
   }
 
