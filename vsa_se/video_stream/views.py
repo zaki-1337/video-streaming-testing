@@ -10,6 +10,6 @@ def home(request):
     ]
     return render(request, 'home1.html', {'video_data': video_data})
 
-def video_display(request, video_url):
-    # video_url = unquote(video_url)
-    return render(request, 'video_display.html', {'video_name': video_url})
+def video_display(request, video_name):
+    # video_name = unquote(video_name)
+    return render(request, 'video_display.html', {'video_name': video_name})
