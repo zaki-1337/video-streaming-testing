@@ -35,113 +35,218 @@
             <option value="480">480p</option>
             <option value="720">720p</option>
             <option value="1080">1080p</option>
-            <option value="1440">1440p</option>
-            <option value="2160">2160p</option>
           </select>
-        <button onclick="toggleQualityOptions()">Select Quality</button>
+        <!-- <button onclick="toggleQualityOptions()">Select Quality</button> -->
       </div>
     </div>
   </div>
 
-  <script>
-    var firebaseConfig = {
-      apiKey: "AIzaSyCeA52-1J41uVC93nszDNl85AMyAROuKsU",
-      authDomain: "se-proj-8c444.firebaseapp.com",
-      projectId: "se-proj-8c444",
-      storageBucket: "se-proj-8c444.appspot.com",
-      messagingSenderId: "187183323117",
-      appId: "1:187183323117:web:e5f9679ff927da390bb9e4",
-      measurementId: "G-Y0RGLEBQJB",
-    };
-    
-    firebase.initializeApp(firebaseConfig);
-    
-    var storageRef = firebase.storage().ref();
-    var resourceName = "{{ video_name }}"
-    var videoRef = storageRef.child(resourceName);
-    
-    videoRef
-      .getDownloadURL()
-      .then(function (url) {
-        document.getElementById("my-video").src = url;
-      })
-      .catch(function (error) {
-        console.error("Error getting download URL: ", error);
-      });
+  <!-- Your HTML code remains unchanged -->
 
-    function toggleQualityOptions() {
-      var qualityOptionsDiv = document.getElementById("quality-options");
-      qualityOptionsDiv.classList.toggle("hidden");
-    }
+<script>
+  var firebaseConfig = {
+    apiKey: "AIzaSyCeA52-1J41uVC93nszDNl85AMyAROuKsU",
+    authDomain: "se-proj-8c444.firebaseapp.com",
+    projectId: "se-proj-8c444",
+    storageBucket: "se-proj-8c444.appspot.com",
+    messagingSenderId: "187183323117",
+    appId: "1:187183323117:web:e5f9679ff927da390bb9e4",
+    measurementId: "G-Y0RGLEBQJB",
+  };
 
-  </script>
+  firebase.initializeApp(firebaseConfig);
 
-  <script>
-    var video = document.getElementById("my-video");
-    var videoInfo = document.getElementById("video-info");
-    var videoName = "{{ video_name }}"
-    videoName = videoName.split(".")[0]
-    document.getElementById("video-name").innerText = videoName;
-    var playbackInfo = document.getElementById("playback-info");
+  var storageRef = firebase.storage().ref();
+  var resourceName = "{{ video_name }}";
 
-    var isOnline = navigator.onLine;
-    var storageKey = "videoPlaybackTime";
-    var intervalTime = 1; // Save every second
+  var video = document.getElementById("my-video");
+  var videoInfo = document.getElementById("video-info");
+  var videoName = "{{ video_name }}";
+  document.getElementById("video-name").innerText = videoName;
+  var playbackInfo = document.getElementById("playback-info");
+  var qualityControl = document.getElementById("quality-control");
 
-    // Function to save the current playback time in local storage
-    function savePlaybackTime() {
-      localStorage.setItem(storageKey, video.currentTime.toString());
-    }
+  var isOnline = navigator.onLine;
+  var storageKey = "videoPlaybackTime";
+  var intervalTime = 1; // Save every second
+  var qualityCheckInterval = 5000; // Check quality every 5 seconds
+  var qualityList = document.getElementById("quality-select");
 
-    function handleVideoError() {
-      playbackInfo.innerText = "Error playing the video. Please try again later.";
-    }
+  // Function to save the current playback time in local storage
+  function savePlaybackTime() {
+    localStorage.setItem(storageKey, video.currentTime.toString());
+  }
 
-    // Check if the user is online
-    if (isOnline) {
-      // Check if there is a stored playback time
-      var storedTime = localStorage.getItem(storageKey);
+  function handleVideoError() {
+    playbackInfo.innerText = "Error playing the video. Please try again later.";
+  }
 
-      if (storedTime) {
-        // Resume playback from the stored time
-        video.currentTime = parseFloat(storedTime);
-      }
+  function getAvailableQualities() {
+    // Fetch available qualities from your Firebase storage
+    // You need to implement your logic to get the available qualities
+    // This is a placeholder; replace it with your actual implementation
+    return [
+      { label: "144p", url: `${resourceName}-144.mp4` },
+      { label: "240p", url: `${resourceName}-240.mp4` },
+      { label: "360p", url: `${resourceName}-360.mp4` },
+      { label: "480p", url: `${resourceName}-480.mp4` },
+      { label: "720p", url: `${resourceName}-720.mp4` },
+      { label: "1080p", url: `${resourceName}-1080.mp4` },
+    ];
+  }
 
-      // Add event listeners for online and offline events
-      window.addEventListener("online", function () {
-        video.play();
-        playbackInfo.innerText = "Online - Resuming playback";
-        window.setTimeout(() => {
-          playbackInfo.innerText = "";
-        }, 5000);
-      });
+  function getAdjustedQuality(downlinkSpeed) {
+    // Add your logic here to adjust quality based on downlink speed
+    // You can customize this function according to your requirements
 
-      window.addEventListener("offline", function () {
-        video.pause();
-        playbackInfo.innerText = "Offline - Video paused";
-      });
-
-      // Save the current playback time every second
-      setInterval(savePlaybackTime, intervalTime * 1000);
-
-      // Clear stored playback time on play
-      video.addEventListener("play", function () {
-        localStorage.removeItem(storageKey);
-      });
-
-      // Event listener for video ended
-      video.addEventListener("ended", function () {
-        playbackInfo.innerText = "Video ended";
-      });
-
-      // Event listener for video error
-      video.addEventListener("error", handleVideoError);
+    if (downlinkSpeed >= 5) {
+      return getAvailableQualities()[5]; // 1080p for downlink speed >= 4 Mbps
+    } else if (downlinkSpeed >= 2.5) {
+      return getAvailableQualities()[4]; // 720p for 2 Mbps <= downlink speed < 4 Mbps
+    } else if (downlinkSpeed >= 1.1) {
+      return getAvailableQualities()[3]; // 480p for 1 Mbps <= downlink speed < 2 Mbps
+    } else if (downlinkSpeed >= 0.7) {
+      return getAvailableQualities()[2]; // 360p for 0.5 Mbps <= downlink speed < 1 Mbps
+    } else if (downlinkSpeed >= 0.5) {
+      return getAvailableQualities()[1]; // 240p for 0.2 Mbps <= downlink speed < 0.5 Mbps
     } else {
-      // User is offline
-      video.pause();
-      playbackInfo.innerText = "Offline - No internet connection";
+      return getAvailableQualities()[0]; // 144p for downlink speed < 0.2 Mbps
     }
-  </script> 
+  }
+
+  function setVideoSource(quality) {
+  var storedTime = localStorage.getItem(storageKey);
+
+  // Pause the video before changing the source
+  video.pause();
+
+  var videoRef = storageRef.child(quality.url);
+
+  videoRef
+    .getDownloadURL()
+    .then(function (url) {
+      // Set the video source and load
+      video.src = url;
+      video.load();
+
+      // Listen for the loadedmetadata event before playing
+      video.addEventListener(
+        'loadedmetadata',
+        function () {
+            // Check if the video has been played once
+            if (storedTime) {
+              // Resume playback from the stored time
+              video.currentTime = parseFloat(storedTime);
+            }
+            video.play(); // Play the video after loadedmetadata event
+        },
+        { once: true } // Use { once: true } to ensure the event listener runs only once
+      );
+
+      // Update the quality control display
+      qualityControl.innerText = `Quality: ${quality.label}`;
+    })
+    .catch(function (error) {
+      console.error("Error getting download URL: ", error);
+    });
+}
+
+  let adjustedQuality = {label:"",url:""}
+
+  function updateQuality() {
+  isOnline = navigator.onLine;
+  if (isOnline) {
+    // Use the navigator.connection API to determine downlink speed
+    var downlinkSpeed = navigator.connection.downlink;
+
+    // Adjust quality based on downlink speed
+    var currAdjustedQuality = getAdjustedQuality(downlinkSpeed);
+    console.log(currAdjustedQuality.label);
+    if (currAdjustedQuality.label != adjustedQuality.label) {
+      // Set the video source to the adjusted quality
+      adjustedQuality = currAdjustedQuality;
+      qualityControl.innerText = `Quality: ${currAdjustedQuality.label}`;
+      setVideoSource(currAdjustedQuality);
+    }
+  }
+}
+
+window.addEventListener("load", function () {
+  // Set the initial quality based on downlink speed
+  var downlinkSpeed = navigator.connection.downlink;
+  var initialQuality = getAdjustedQuality(downlinkSpeed);
+  setVideoSource(initialQuality);
+});
+
+  // Fetch available qualities and update the quality list
+  updateQualityList();
+
+  function updateQualityList() {
+    var availableQualities = getAvailableQualities();
+
+    // Clear existing options
+    qualityList.innerHTML = "";
+
+    // Add new options
+    availableQualities.forEach(function (quality) {
+      var option = document.createElement("option");
+      option.value = quality.label;
+      option.text = quality.label;
+      qualityList.add(option);
+    });
+  }
+
+  function changeVideoQuality() {
+    var selectedQuality = qualityList.value;
+    var availableQualities = getAvailableQualities();
+    var selectedQualityObj = availableQualities.find(
+      (quality) => quality.label === selectedQuality
+    );
+
+    setVideoSource(selectedQualityObj);
+  }
+
+  // Add event listener for network change
+  window.addEventListener("online", function () {
+    playbackInfo.innerText = "Online - Resuming playback";
+    window.setTimeout(() => {
+      playbackInfo.innerText = "";
+    }, 5000);
+    // updateQuality();
+    video.play()
+  });
+
+  window.addEventListener("offline", function () {
+    video.pause();
+    playbackInfo.innerText = "Offline - Video paused";
+    // updateQuality();
+  });
+
+  // Initialize video source based on initial network conditions
+  updateQuality();
+
+  // Periodically check network speed and update quality
+  setInterval(updateQuality, qualityCheckInterval);
+
+  var video = document.getElementById("my-video");
+  var qualityList = document.getElementById("quality-select");
+
+  // Save the current playback time every second
+  setInterval(savePlaybackTime, intervalTime * 1000);
+
+  // // Clear stored playback time on play
+  // video.addEventListener("play", function () {
+  //   localStorage.removeItem(storageKey);
+  // });
+
+  // Event listener for video ended
+  video.addEventListener("ended", function () {
+    playbackInfo.innerText = "Video ended";
+  });
+
+  // Event listener for video error
+  video.addEventListener("error", handleVideoError);
+</script>
 
 </body>
 </html>
