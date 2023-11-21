@@ -246,6 +246,9 @@ window.addEventListener("load", function () {
   // Event listener for video ended
   video.addEventListener("ended", function () {
     playbackInfo.innerText = "Video ended";
+    window.setTimeout(() => {
+      playbackInfo.innerText = "";
+    }, 1000);
   });
 
   // Event listener for video error
