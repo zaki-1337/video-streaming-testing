@@ -46,13 +46,13 @@
 
 <script>
   var firebaseConfig = {
-    apiKey: "AIzaSyCeA52-1J41uVC93nszDNl85AMyAROuKsU",
-    authDomain: "se-proj-8c444.firebaseapp.com",
-    projectId: "se-proj-8c444",
-    storageBucket: "se-proj-8c444.appspot.com",
-    messagingSenderId: "187183323117",
-    appId: "1:187183323117:web:e5f9679ff927da390bb9e4",
-    measurementId: "G-Y0RGLEBQJB",
+    apiKey: "AIzaSyDHf0eey5B28cmYuVg32hu9QhglbFzyODw",
+    authDomain: "video-stream-3928b.firebaseapp.com",
+    projectId: "video-stream-3928b",
+    storageBucket: "video-stream-3928b.appspot.com",
+    messagingSenderId: "872282647241",
+    appId: "1:872282647241:web:4547d6c052506af1a93b18",
+    measurementId: "G-WNHTRREFDJ"
   };
 
   firebase.initializeApp(firebaseConfig);
@@ -101,7 +101,10 @@
     // Add your logic here to adjust quality based on downlink speed
     // You can customize this function according to your requirements
 
-    if (downlinkSpeed >= 4) {
+    if (downlinkSpeed >= 20) {
+      return getAvailableQualities()[6];
+    }
+    else if (downlinkSpeed >= 4) {
       return getAvailableQualities()[5]; // 1080p for downlink speed >= 4 Mbps
     } else if (downlinkSpeed >= 2.5) {
       return getAvailableQualities()[4]; // 720p for 2.5 Mbps <= downlink speed < 4 Mbps
@@ -168,7 +171,7 @@
       // Set the video source to the adjusted quality
       adjustedQuality = currAdjustedQuality;
       qualityControl.innerText = `Quality: ${currAdjustedQuality.label}`;
-      // setVideoSource(currAdjustedQuality);
+      setVideoSource(currAdjustedQuality);
     }
   }
 }
