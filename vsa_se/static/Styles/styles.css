@@ -108,4 +108,23 @@ button:hover {
 .hidden {
     display: none;
 }
+
+
+@media (max-width: 899px) {
+    .form-control {
+        width: 200px;
+      }
+      #video-name{
+        font-size: 10px;
+      }
+  }
+    
+  @media (max-width: 477px) {
+      .form-control {
+        width: 150px;
+      }
+      #video-name{
+        font-size: 10px;
+      }
+  }
   
