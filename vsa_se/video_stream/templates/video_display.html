@@ -102,9 +102,8 @@
     // You can customize this function according to your requirements
 
     if (downlinkSpeed >= 20) {
-      return getAvailableQualities()[6];
-    }
-    else if (downlinkSpeed >= 4) {
+      return getAvailableQualities()[6]; // 2160p for downlink speed >= 20 Mbps
+    } else if (downlinkSpeed >= 4) {
       return getAvailableQualities()[5]; // 1080p for downlink speed >= 4 Mbps
     } else if (downlinkSpeed >= 2.5) {
       return getAvailableQualities()[4]; // 720p for 2.5 Mbps <= downlink speed < 4 Mbps
